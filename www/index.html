@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+     var description;
+     
+    $(function(){
+        //ボタンを押したときに動く
+        $(".kenbutton").on("click",function(){
+            var ken = $(this).attr("id");
+            $.ajax({
+            url:"http://javascriptajax.azurewebsites.net/get_tenki.php?city="+ken,
+            type:"GET",
+            dataType:"xml",
+            }).done(function(data){
+                
+                // //descriptionの一つ目の要素だけを取り出す
+                //description = $(data).find("description:eq(0)").text();    
+                // //一度動的な画面の状態を消す
+                $("#hyozi").text("");
+                $("#tenki").html("");
+
+                // $("#hyozi").append(description);
+                 $("#hyozi").text($(data).find("description:eq(0)").text());
+                
+                var i = 0;
+                var gifurl;
+                $(data).find("item").each(function(){
+                //一回目以外をとる
+                    if(i!=0){
+                    gifurl = $(this).find('url').text();
+                    //gif画像を表示する
+                    $("#tenki").append("<img src='"+gifurl+"'/>");
+                    //descriptionのtext要素をとりだす
+                    $("#tenki").append($(this).find("description").text());
+                    $("#tenki").append("<br>");
+                    }
+                i++;
+               })
+            });
+        });
+
+    });
+
+
+ </script>
+</head>
+<body>
+<h1>天気予報</h1>
+<input type="button" class="kenbutton" id="370000" value="香川県">
+<input type="button" class="kenbutton" id="380010" value="愛媛県"><br>
+<input type="button" class="kenbutton" id="360010" value="徳島県">
+<input type="button" class="kenbutton" id="390010" value="高知県"><br>
+
+<p>ここに天気予報を表示します</p>
+<!--
+<table id="hyozi"></table>
+-->
+<div id="hyozi"></div>
+<div id="tenki"></div>
+</body>
+</html>
